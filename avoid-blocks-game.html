@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Falling Game</title>
+    
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: black; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="440" height="950"></canvas>
+
+<script>
+	// JavaScript code goes here
+    
+    //puts the canvas on the map
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    
+    //declarations
+    var x = canvas.width/2;
+    var y = canvas.height-30;
+    var dx = 2;
+    var dy = -8;
+    var paddleHeight = 50;
+    var paddleWidth = 50;
+    var paddleX = (canvas.width-paddleWidth)/2;
+    var rightPressed = false;
+    var leftPressed = false;
+    var times = 0;
+    
+    //add event listeners
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+    
+    //pressing keys moves the paddle
+    function keyDownHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = true;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = true;
+        }
+    }
+    function keyUpHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = false;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = false;
+        }
+    }
+    
+    //user character
+    function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(paddleX, 5, paddleWidth, paddleHeight);
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+        ctx.closePath();
+    }
+    
+    //draw obstacles
+    function drawObstacle(x,y) {
+        ctx.beginPath();
+        ctx.rect(x, y, 300, 25);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    //draws everything
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPaddle();
+        while (times > 130) {
+            x=Math.random()*200-50;
+            y=canvas.height;
+            times = 0;
+        }
+        drawObstacle(x,y);
+
+        if(rightPressed && paddleX < canvas.width-paddleWidth) {
+            paddleX += 7;
+        }
+        else if(leftPressed && paddleX > 0) {
+            paddleX -= 7;
+        }
+        
+        //collision detection
+        if ( (((paddleX+paddleWidth)<(x+350))&&((paddleX+paddleWidth)>(x))) && ((paddleHeight - 5) > y)) {         
+            alert("You Lose, click OK to try again!");
+            document.location.reload();
+        }
+        
+        y += dy;
+        times += 1;
+        requestAnimationFrame(draw);
+    }
+    
+    draw();
+
+</script>
+
+</body>
+</html>
